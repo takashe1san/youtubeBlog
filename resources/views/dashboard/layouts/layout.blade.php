@@ -398,6 +398,20 @@
      <script src="{{asset('adminassets')}}/js/views/main.js"></script>
      <script src="{{asset('adminassets')}}/js/libs/datatablesJquery.js"></script>
      <script src="{{asset('adminassets')}}/js/libs/datatablesBootstrap.js"></script>
+     <script src="{{asset('adminassets')}}/js/ck.js"></script>
+     {{-- <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script> --}}
+     <script>
+        var editors = document.querySelectorAll('#editor');
+        for (let i = 0; i < editors.length; i++) {
+            ClassicEditor
+                .create(editors[i]);
+            
+            // $(document).ready(function(){
+            //     $('.js-example-basic-multiple').select2();
+            // });
+            
+        }
+     </script>
 {{-- 
      <script>
         $(document).ready(function(){

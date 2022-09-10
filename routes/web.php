@@ -43,8 +43,8 @@ Route::group([
     Route::get('category/all', [CategoryController::class, 'getCategories'])->name('category.all');
     Route::post('category/delete', [CategoryController::class, 'delete'])->name('category.delete');
     
-    Route::get('post/all', [CategoryController::class, 'getCategories'])->name('category.all');
-    Route::post('post/delete', [CategoryController::class, 'delete'])->name('category.delete');
+    Route::get('post/all', [PostController::class, 'getPosts'])->name('post.all');
+    Route::post('post/delete', [PostController::class, 'delete'])->name('post.delete');
 
     Route::resources([
         'category' => CategoryController::class,
