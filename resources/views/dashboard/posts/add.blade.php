@@ -82,6 +82,11 @@
                         <label>{{__('words.content')}}</label>
                         <textarea name="{{$key}}[content]" class="form-control" id="editor" cols="30" rows="10"></textarea>
                       </div> 
+
+                      <div class="form-group mt-2 col-md-12">
+                        <label>{{__('words.tags')}}</label>
+                        <input type="text" name="{{$key}}[tags]" class="form-control">
+                      </div>
                     </div>
                   @endforeach
                 </div>

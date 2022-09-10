@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Trait\imageUpload;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PostController extends Controller
 {
+    use imageUpload;
     /**
      * Display a listing of the resource.
      *
@@ -41,6 +43,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        // return dd($request);
         //get catagories
         $categories = Category::all();
         foreach($categories as $item){
@@ -55,6 +58,7 @@ class PostController extends Controller
             $data[$key.'.title']   = 'required|string';
             $data[$key.'.content'] = 'nullable|string';
             $data[$key.'.smallDesc'] = 'nullable|string';
+            $data[$key.'.tags'] = 'nullable|string';
         }
         $request->validate($data);
 
@@ -63,12 +67,13 @@ class PostController extends Controller
 
         //store category image
         if($request->has('image')){
-            $path = $request->file('image')->store('images');
+            // $path = $request->file('image')->store('images');
+            $path = $this->upload($request->image);
             $post->update(['image' => $path]);
         }
 
-        //return to edit page after storing
-        return back();
+        //redir to index page after storing
+        return redirect(route('dashboard.post.index'));
     }
 
     /**
@@ -88,9 +93,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        $categories = Category::all();
+        return view('dashboard.posts.edit', compact('post','categories'));
     }
 
     /**
@@ -100,9 +106,37 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,Post $post)
     {
-        //
+        //get catagories
+        $categories = Category::all();
+        foreach($categories as $item){
+            $categoriesID[] = $item->id;
+        }
+        //validate request
+        $data = [
+            'image'      => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
+            'category_id'   => 'nullable|'.Rule::in($categoriesID),
+        ];
+        foreach(config('app.languages') as $key => $value){
+            $data[$key.'.title']   = 'required|string';
+            $data[$key.'.content'] = 'nullable|string';
+            $data[$key.'.smallDesc'] = 'nullable|string';
+            $data[$key.'.tags'] = 'nullable|string';
+        }
+        $request->validate($data);
+
+        $post->update($request->except('image','_token', '_method'));
+
+        //store category image
+        if($request->has('image')){
+            // $path = $request->file('image')->store('images');
+            $path = $this->upload($request->image);
+            $post->update(['image' => $path]);
+        }
+
+        //return to edit page after updating
+        return back();
     }
 
     /**
